@@ -8,10 +8,10 @@ class NewsController extends Controller
 {
 	public function index()
 	{
-		$news = $this->getNews();
-
+		//$news = $this->getNews();
+        $data = json_decode(file_get_contents('doc/news.json'), true);
 		return view('news.index', [
-			'news' => $news
+			'news' => $data
 		]);
 
 	}

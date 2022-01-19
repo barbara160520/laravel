@@ -15,8 +15,11 @@
             <x-alert type="danger" :message="$error"></x-alert>
         @endforeach
     @endif
+    @if ($message == "success")
+            <x-alert type="success" message="Успех! Новость добавлена" ></x-alert>
+    @endif
     <div>
-        <form method="post" action="{{ route('admin.news.store', ['q' => 1]) }}">
+        <form method="post" action="{{ route('admin.news.store') }}">
             @csrf
             <div class="form-group">
                 <label for="title">Наименование</label>
@@ -41,5 +44,7 @@
             <br>
             <button type="submit" class="btn btn-success" style="float: right;">Сохранить</button>
         </form>
+        <a href="{{ route('admin.news.index') }}" type="button" class="btn btn-sm btn-outline-secondary">
+        Назад</a>
     </div>
 @endsection

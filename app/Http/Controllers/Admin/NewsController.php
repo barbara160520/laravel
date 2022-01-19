@@ -14,7 +14,9 @@ class NewsController extends Controller
      */
     public function index()
     {
-        return view('admin.news.index');
+        $data = json_decode(file_get_contents('doc/news.json'), true);
+        //dd($data);
+        return view('admin.news.index',['data' => $data]);
     }
 
     /**
@@ -24,8 +26,8 @@ class NewsController extends Controller
      */
     public function create()
     {
-        return "Создать новсть";
-        return view('admin.news.create');
+        $message='';
+        return view('admin.news.create',['message' => $message]);
     }
 
     /**
@@ -36,14 +38,40 @@ class NewsController extends Controller
      */
     public function store(Request $request)
     {
+
+        //вычисления ключа
+        $doc = json_decode(file_get_contents('doc/news.json'), true);
+        if ($doc == null) {
+            $number = 1;
+        } else{
+            $number = count($doc)+1;
+        }
+
+        //вырезание скобки
+        $contents = file_get_contents('doc/news.json');
+        rtrim($contents);
+        $contents = substr($contents, 0, -2);
+
+        file_put_contents(public_path('doc/news.json'), $contents);
+
         $request->validate([
-			'title' => ['required', 'string', 'min:5']
+			'title' => ['required', 'string', 'min:5'],
+            'author' => ['required', 'string', 'min:4']
 		]);
 
-		$data = json_encode($request->all());
-		file_put_contents(public_path('news/data.json'), $data);
+        //добавление новых данных
+        $data = json_encode($request->all());
 
-        return response()->json($request->all());
+        $data = ',"'.$number.'": ' . $data . '}';
+
+        file_put_contents(public_path('doc/news.json'), $data, FILE_APPEND | LOCK_EX);
+
+        if (!empty(response()->json($request->all()))){
+            $message = 'success';
+            //echo $message;
+        }
+
+        return view('admin.news.create',['message' => $message]);
     }
 
     /**

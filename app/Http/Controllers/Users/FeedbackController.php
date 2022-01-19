@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Users;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class CategoryController extends Controller
+class FeedbackController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,8 +14,8 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $data = json_decode(file_get_contents('doc/category.json'), true);
-        return view('admin.category.index',['data' => $data]);
+        $data=json_decode(file_get_contents('doc/feedback.json'), true);;
+        return view('users.feedback.index',['data'=>$data]);
     }
 
     /**
@@ -26,7 +26,7 @@ class CategoryController extends Controller
     public function create()
     {
         $message='';
-        return view('admin.category.create',['message' => $message]);
+        return view('users.feedback.create',['message'=>$message]);
     }
 
     /**
@@ -37,8 +37,9 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
+
         //вычисления ключа
-        $doc = json_decode(file_get_contents('doc/category.json'), true);
+        $doc = json_decode(file_get_contents('doc/feedback.json'), true);
 
         if ($doc == null) {
             $number = 1;
@@ -47,29 +48,26 @@ class CategoryController extends Controller
         }
 
         //вырезание скобки
-        $contents = file_get_contents('doc/category.json');
+        $contents = file_get_contents('doc/feedback.json');
         rtrim($contents);
         $contents = substr($contents, 0, -2);
 
-        file_put_contents(public_path('doc/category.json'), $contents);
+        file_put_contents(public_path('doc/feedback.json'), $contents);
 
-        $request->validate([
-            'title' => ['required', 'string', 'min:5']
-        ]);
 
         //добавление новых данных
         $data = json_encode($request->all());
 
         $data = ',"'.$number.'": ' . $data . '}';
 
-        file_put_contents(public_path('doc/category.json'), $data, FILE_APPEND | LOCK_EX);
+        file_put_contents(public_path('doc/feedback.json'), $data, FILE_APPEND | LOCK_EX);
 
         if (!empty(response()->json($request->all()))){
             $message = 'success';
             //echo $message;
         }
 
-        return view('admin.category.create',['message' => $message]);
+        return view('users.feedback.index',['message' => $message]);
     }
 
     /**
@@ -80,7 +78,8 @@ class CategoryController extends Controller
      */
     public function show($id)
     {
-        //
+        $data =json_decode(file_get_contents('doc/feedback.json'), true);
+        return view('users.feedback.show',['data' => $data]);
     }
 
     /**

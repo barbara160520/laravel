@@ -25,6 +25,18 @@
                     Категории
                 </a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link @if(request()->routeIs('users.order.*')) active @endif" href="{{ route('users.order.index') }}">
+                    <span data-feather="file"></span>
+                    Заказы
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @if(request()->routeIs('users.feedback.*')) active @endif" href="{{ route('users.feedback.index') }}">
+                    <span data-feather="bar-chart-2"></span>
+                    Отзывы
+                </a>
+            </li>
         </ul>
 
     </div>

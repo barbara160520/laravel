@@ -37,8 +37,10 @@
 <body class="d-flex h-100 text-center text-white bg-dark">
 <div class="cover-container">
     <x-aboutheader></x-aboutheader>
+
     @yield('content')
     @yield('footer')
 </div>
 </body>
 </html>
+

@@ -8,11 +8,12 @@ class CategoryController extends Controller
 {
     public function index()
 	{
-        $news = $this->getNews();
-		$сategory = $this->getCategory($news);
+        /*$news = $this->getNews();
+		$сategory = $this->getCategory($news);*/
+        $data = json_decode(file_get_contents('doc/category.json'), true);
 
 		return view('category.index',[
-            'category' => $сategory
+            'category' => $data
         ]);
 
 	}

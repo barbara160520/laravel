@@ -1,9 +1,10 @@
 <?php
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\NewsController;
+use App\Http\Controllers\{CategoryController,NewsController};
 use App\Http\Controllers\Admin\NewsController as AdminNewsController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
-use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\Users\OrderController;
+use App\Http\Controllers\Users\FeedbackController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,13 +21,16 @@ use App\Http\Controllers\CategoryController;
     return view('welcome');
 });*/
 
-//news routes
-//admin
 Route::group(['prefix' => 'admin', 'as' => 'admin.'], function() {
 	Route::view('/', 'admin.index', ['someVariable' => 'someText'])
     ->name('index');
 	Route::resource('/category', AdminCategoryController::class);
     Route::resource('/news', AdminNewsController::class);
+});
+
+Route::group(['prefix' => 'users', 'as' => 'users.'], function() {
+	Route::resource('/order', OrderController::class);
+    Route::resource('/feedback', FeedbackController::class);
 });
 
 Route::get('/category',[CategoryController::class, 'index'])
