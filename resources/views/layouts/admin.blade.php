@@ -22,9 +22,17 @@
                 font-size: 3.5rem;
             }
         }
+
+  .bnt-edit{
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+  }
+
     </style>
     <!-- Custom styles for this template -->
     <link href="{{ asset('css/dashboard.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/message.css') }}" rel="stylesheet">
 </head>
 <body>
 

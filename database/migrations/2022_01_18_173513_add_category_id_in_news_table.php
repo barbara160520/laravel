@@ -14,7 +14,12 @@ class AddCategoryIdInNewsTable extends Migration
     public function up()
     {
         Schema::table('news', function (Blueprint $table) {
-            //
+            $table->foreignId('category_id')
+				->after('id')
+				->constrained('categories')
+			    ->onDelete('cascade');
+
+			$table->index(['slug', 'status', 'display']);
         });
     }
 
@@ -26,7 +31,9 @@ class AddCategoryIdInNewsTable extends Migration
     public function down()
     {
         Schema::table('news', function (Blueprint $table) {
-            //
+            $table->dropIndex(['slug', 'status', 'display']);
+			$table->dropForeign('category_id');
+			$table->dropColumn('category_id');
         });
     }
 }

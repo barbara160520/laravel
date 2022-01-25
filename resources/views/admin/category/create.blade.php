@@ -30,7 +30,7 @@
                 <textarea class="form-control" name="description" id="description">{!! old('description') !!}</textarea>
             </div>
             <br>
-            <button type="submit"  value="Сохранить" class="btn btn-success" style="float: right;">Сохранить</button>
+            <button type="submit"  value="Добавить" class="btn btn-success" style="float: right;">Добавить</button>
         </form>
         <a href="{{ route('admin.category.index') }}" type="button" class="btn btn-sm btn-outline-secondary">
         Назад</a>

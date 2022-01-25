@@ -2,16 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\News;
 use Illuminate\Http\Request;
 
 class NewsController extends Controller
 {
 	public function index()
 	{
-		//$news = $this->getNews();
-        $data = json_decode(file_get_contents('doc/news.json'), true);
+		$model = new News();
+		$news = $model->getNews();
+
 		return view('news.index', [
-			'news' => $data
+			'news' => $news
 		]);
 
 	}
@@ -21,10 +23,14 @@ class NewsController extends Controller
 		if($id > 10) {
 			abort(404);
 		}
-		$news = $this->getNewsById($id);
+		$model = new News();
+		$news = $model->getNewsById($id);
+        $category = $model->getIdCategory($id);
 
 		return view('news.show', [
-			'newsItem' => $news
+			'newsItem' => $news,
+            'category_id' => $category
 		]);
 	}
+
 }

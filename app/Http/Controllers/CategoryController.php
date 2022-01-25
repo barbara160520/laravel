@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\{Category,News};
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
     public function index()
 	{
-        /*$news = $this->getNews();
-		$сategory = $this->getCategory($news);*/
-        $data = json_decode(file_get_contents('doc/category.json'), true);
+
+        $model = new Category();
+		$data = $model->getCategories();
 
 		return view('category.index',[
             'category' => $data
@@ -20,13 +21,25 @@ class CategoryController extends Controller
 
     public function show(int $id)
 	{
-		if($id > 10) {
+		if($id > 15) {
 			abort(404);
 		}
-		$category = $this->getCategoryById($id);
+        $model = new Category();
+		$data = $model->getCategoriesById($id);
+
+        $new = new News();
+		$news = $new->getNewsByCategory($id);
+
+        $category = $model->getOneCategory($id);
+
+        $count = $model->getCount($id);
 
 		return view('category.show', [
-			'categoryItem' => $category
+			'categoryItem' => $data,
+            'news' => $news,
+            'count' => $count,
+            'id' => $id,
+            'category' => $category
 		]);
 	}
 }

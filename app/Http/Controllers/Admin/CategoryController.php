@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\Category;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
@@ -14,8 +15,14 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $data = json_decode(file_get_contents('doc/category.json'), true);
-        return view('admin.category.index',['data' => $data]);
+        $model = new Category();
+		$data = $model->getCategories();
+        $message = "";
+
+        return view('admin.category.index',[
+            'data' => $data,
+            'message' => $message
+    ]);
     }
 
     /**
@@ -37,39 +44,14 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        //вычисления ключа
-        $doc = json_decode(file_get_contents('doc/category.json'), true);
-
-        if ($doc == null) {
-            $number = 1;
-        } else{
-            $number = count($doc)+1;
-        }
-
-        //вырезание скобки
-        $contents = file_get_contents('doc/category.json');
-        rtrim($contents);
-        $contents = substr($contents, 0, -2);
-
-        file_put_contents(public_path('doc/category.json'), $contents);
-
         $request->validate([
             'title' => ['required', 'string', 'min:5']
         ]);
 
-        //добавление новых данных
-        $data = json_encode($request->all());
+        $model = new Category();
+		$data = $model->getAction('insert',$request->all('title','description'));
 
-        $data = ',"'.$number.'": ' . $data . '}';
-
-        file_put_contents(public_path('doc/category.json'), $data, FILE_APPEND | LOCK_EX);
-
-        if (!empty(response()->json($request->all()))){
-            $message = 'success';
-            //echo $message;
-        }
-
-        return view('admin.category.create',['message' => $message]);
+        return view('admin.category.create',['message' => $data]);
     }
 
     /**
@@ -91,7 +73,13 @@ class CategoryController extends Controller
      */
     public function edit($id)
     {
-        //
+        $message = "";
+        $model = new Category();
+		$data = $model->getCategoriesById($id);
+        return view('admin.category.edit',[
+            'message' => $message,
+            'data' => $data
+        ]);
     }
 
     /**
@@ -103,9 +91,17 @@ class CategoryController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
-    }
+        $model = new Category();
+        dd($request->all('id','title','description'),$id);
+		$data = $model->getAction('update',$request->all('id','title','description'));
 
+        $response = [
+            'message' => $data
+        ];
+        echo json_encode($response, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+        die();
+        //return view('admin.category.index',['message' => $data]);
+    }
     /**
      * Remove the specified resource from storage.
      *
@@ -114,6 +110,20 @@ class CategoryController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $model = new Category();
+		$data = $model->getAction('delete',$id);
+
+        if ($data == 'success'){
+            $message = "Категория удалена";
+        }
+        else {
+            $message = "Что пошло не так";
+        }
+
+        $response = [
+            'message' => $message
+        ];
+        echo json_encode($response, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+        die();
     }
 }

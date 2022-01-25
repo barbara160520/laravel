@@ -13,8 +13,10 @@ class CreateCategoryTable extends Migration
      */
     public function up()
     {
-        Schema::create('category', function (Blueprint $table) {
+        Schema::create('categories', function (Blueprint $table) {
             $table->id();
+			$table->string('title', 255);
+			$table->text('description')->nullable();
             $table->timestamps();
         });
     }

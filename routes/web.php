@@ -22,10 +22,16 @@ use App\Http\Controllers\Users\FeedbackController;
 });*/
 
 Route::group(['prefix' => 'admin', 'as' => 'admin.'], function() {
-	Route::view('/', 'admin.index', ['someVariable' => 'someText'])
+	Route::view('/', 'admin.index')
     ->name('index');
 	Route::resource('/category', AdminCategoryController::class);
     Route::resource('/news', AdminNewsController::class);
+    Route::get('/news/destroy/{id}', [AdminNewsController::class, 'destroy'])
+	->where('id', '\d+')
+	->name('news.destroy');
+    Route::get('/category/destroy/{id}', [AdminCategoryController::class, 'destroy'])
+	->where('id', '\d+')
+	->name('category.destroy');
 });
 
 Route::group(['prefix' => 'users', 'as' => 'users.'], function() {
@@ -49,5 +55,3 @@ Route::get('/news', [NewsController::class, 'index'])
 Route::get('/news/{id}', [NewsController::class, 'show'])
 	->where('id', '\d+')
 	->name('news.show');
-
-

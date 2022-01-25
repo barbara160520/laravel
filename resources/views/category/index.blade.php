@@ -17,7 +17,7 @@
 <div class="album py-5 bg-light">
 <div class="container">
 <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-@forelse($category as $id=>$categoryItem)
+@forelse($category as $categoryItem)
 
 		<div class="col">
 			<div class="card shadow-sm">
@@ -25,13 +25,13 @@
 -->
 				<div class="card-body">
 					<div class="card-header">
-						<strong>{{ $categoryItem['title'] }}</strong>
+						<strong>{{ $categoryItem->title }}</strong>
 					</div>
-					<p class="card-text">{!! $categoryItem['description'] !!}</p>
-					<div>Количество новостей: {{random_int(1,10) }}</div>
+					<p class="card-text">{!! $categoryItem->description !!}</p>
+					<div>Количество новостей: {{$categoryItem->count_categories }}</div>
 					<div class="d-flex justify-content-between align-items-center">
 						<div class="btn-group">
-                        <a href="{{ route('category.show', ['id' => $id]) }}" type="button" class="btn btn-sm btn-outline-secondary">Подробнее</a>
+                        <a href="{{ route('category.show', ['id' => $categoryItem->id]) }}" type="button" class="btn btn-sm btn-outline-secondary">Подробнее</a>
                             <small class="text-muted">{{ now('Europe/Moscow') }}</small>
                         </div>
 					</div>
@@ -46,5 +46,6 @@
 </div>
 @endsection
 <?php
-//dump($category);
+
+//dump();
 ?>

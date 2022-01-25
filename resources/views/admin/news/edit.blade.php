@@ -1,37 +1,31 @@
 @extends('layouts.admin')
-@section('title') Добавить запись @endsection
+@section('title') Список новостей @endsection
 @section('header')
-    <h1 class="h2">Добавить запись</h1>
-    <div class="btn-toolbar mb-2 mb-md-0">
-        <div class="btn-group me-2">
-
-        </div>
-
-    </div>
+    <h1 class="h2">Редактировать новость</h1>
 @endsection
 @section('content')
-    @if($errors->any())
+@if($errors->any())
         @foreach($errors->all() as $error)
             <x-alert type="danger" :message="$error"></x-alert>
         @endforeach
     @endif
     @if ($message == "success")
-            <x-alert type="success" message="Успех! Новость добавлена" ></x-alert>
+            <x-alert type="success" message="Успех! Запись изменена" ></x-alert>
     @endif
     <div>
-        <form method="post" action="{{ route('admin.news.store') }}">
+        <form method="get" action="{{ route('admin.news.update', ['news' => $data->id]) }}">
             @csrf
             <div class="form-group">
                 <label for="title">Наименование</label>
-                <input type="text" class="form-control" id="title" name="title" value="{{ old('title') }}">
+                <input type="text" class="form-control" id="title" name="title" value="{{ $data->title }}">
             </div>
             <div class="form-group">
                 <label for="title">Подзаголовог</label>
-                <input type="text" class="form-control" id="slug" name="slug" value="{{ old('slug') }}">
+                <input type="text" class="form-control" id="slug" name="slug" value="{{ $data->slug }}">
             </div>
             <div class="form-group">
                 <label for="author">Автор</label>
-                <input type="text" class="form-control" id="author" name="author" value="{{ old('author') }}">
+                <input type="text" class="form-control" id="author" name="author" value="{{ $data->author }}">
             </div>
             <div class="form-group">
                 <label for="status">Статус</label>
@@ -55,10 +49,10 @@
             </div>
             <div class="form-group">
                 <label for="description">Описание</label>
-                <textarea class="form-control" name="description" id="description">{!! old('description') !!}</textarea>
+                <textarea class="form-control" name="description" id="description">{!! $data->description  !!}</textarea>
             </div>
             <br>
-            <button type="submit" class="btn btn-success" style="float: right;">Сохранить</button>
+            <button type="submit" class="btn btn-success" style="float: right;">Изменить</button>
         </form>
         <a href="{{ route('admin.news.index') }}" type="button" class="btn btn-sm btn-outline-secondary">
         Назад</a>

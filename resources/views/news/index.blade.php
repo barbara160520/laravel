@@ -17,7 +17,8 @@
 <div class="album py-5 bg-light">
 <div class="container">
 <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-@forelse($news as $id=>$newsItem)
+
+@forelse($news as $newsItem)
 
 		<div class="col">
 			<div class="card shadow-sm">
@@ -25,13 +26,13 @@
 -->
 				<div class="card-body">
 					<div class="card-header">
-						<strong>{{ $newsItem['title'] }}</strong>
+						<strong>{{ $newsItem->title }}</strong>
 					</div>
-					<p class="card-text">{!! $newsItem['description'] !!}</p>
-					<div>Автор: {{ $newsItem['author'] }}</div>
+					<p class="card-text">{!! $newsItem->description !!}</p>
+					<div>Автор: {{ $newsItem->author }}</div>
 					<div class="d-flex justify-content-between align-items-center">
 						<div class="btn-group">
-                        <a href="{{ route('news.show', ['id' => $id]) }}" type="button" class="btn btn-sm btn-outline-secondary">Подробнее</a>
+                        <a href="{{ route('news.show', ['id' => $newsItem->id]) }}" type="button" class="btn btn-sm btn-outline-secondary">Подробнее</a>
                             <small class="text-muted">{{ now('Europe/Moscow') }}</small>
                         </div>
 					</div>
@@ -45,3 +46,4 @@
 </div>
 </div>
 @endsection
+
