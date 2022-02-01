@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\News;
+use App\Models\Category;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
@@ -15,15 +16,18 @@ class NewsController extends Controller
      */
     public function index()
     {
-        $model = new News();
-		$news = $model->getNews();
+		$news = News::query()
+			/*->whereHas('category', function ($query) {
+				$query->where('id', '<', 10);
+			})*/
+			->with('category')
+			->select(News::$availableFields)
+			->paginate(5);
 
         $message = "";
-        $status = "";
         return view('admin.news.index', [
 			'data' => $news,
-            'message' => $message,
-            'status' => $status
+            'message' => $message
 		]);
     }
 
@@ -34,8 +38,10 @@ class NewsController extends Controller
      */
     public function create()
     {
-        $message='';
-        return view('admin.news.create',['message' => $message]);
+        $categories = Category::all();
+        return view('admin.news.create',[
+            'categories' =>$categories
+    ]);
     }
 
     /**
@@ -51,20 +57,26 @@ class NewsController extends Controller
             'author' => ['required', 'string', 'min:4']
 		]);
 
-        $model = new News();
-		$data = $model->getAction('insert',$request
-        ->all('title', 'author','slug','category_id', 'status', 'description'));
+        $created = News::create(
+			$request->only(['category_id', 'title','slug', 'author', 'status', 'description'])
+		);
 
-        return view('admin.news.create',['message' => $data]);
+		if($created) {
+			return redirect()->route('admin.news.index')
+				     ->with('success', 'Запись успешно добавлена');
+		}
+
+		return back()->with('error', 'Не удалось добавить запись')
+			->withInput();
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  News $news
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(News $news)
     {
         //
     }
@@ -72,17 +84,15 @@ class NewsController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  News $news
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(News $news)
     {
-        $message = "";
-        $model = new News();
-		$data = $model->getNewsById($id);
+        $categories = Category::all();
         return view('admin.news.edit',[
-            'message' => $message,
-            'data' => $data
+            'news' => $news,
+            'categories' => $categories
         ]);
     }
 
@@ -90,30 +100,42 @@ class NewsController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  News $news
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, News $news)
     {
-        $model = new News();
+        /*$model = new News();
 		$data = $model->getAction('insert',$request
         ->all('title', 'author','slug','category_id', 'status', 'description'));
 
-        return view('admin.news.index',['message' => $data]);
+        return view('admin.news.index',['message' => $data]);*/
+
+
+        $updated = $news->fill($request->only([
+            'category_id', 'title','slug', 'author', 'status', 'description'
+            ]))
+        ->save();
+
+        if($updated) {
+            return redirect()->route('admin.news.index')
+                ->with('success', 'Запись успешно обновлена');
+        }
+
+        return back()->with('error', 'Не удалось обновить запись')
+            ->withInput();
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  News $news
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(News $news,$id)
     {
-        $model = new News();
-		$data = $model->getAction('delete',$id);
-
-        if ($data == 'success'){
+        $news = News::where('id','=',$id)->delete();
+        if ($news != null){
             $message = "Новость удалена";
             $status = "success";
         }

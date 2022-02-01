@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Users;
 
+use App\Models\Feedback;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
@@ -14,8 +15,15 @@ class FeedbackController extends Controller
      */
     public function index()
     {
-        $data=json_decode(file_get_contents('doc/feedback.json'), true);;
-        return view('users.feedback.index',['data'=>$data]);
+        $data = Feedback::query()->select(
+            Feedback::$availableFields
+        )->get();
+
+        $message = "";
+        return view('users.feedback.index',[
+            'data'=>$data,
+            'message' => $message
+        ]);
     }
 
     /**
@@ -25,8 +33,7 @@ class FeedbackController extends Controller
      */
     public function create()
     {
-        $message='';
-        return view('users.feedback.create',['message'=>$message]);
+        return view('users.feedback.create');
     }
 
     /**
@@ -38,48 +45,42 @@ class FeedbackController extends Controller
     public function store(Request $request)
     {
 
-        //вычисления ключа
-        $doc = json_decode(file_get_contents('doc/feedback.json'), true);
+        $request->validate([
+			'firstName' => ['required', 'string', 'min:5'],
+            'lastName' => ['required', 'string', 'min:4'],
+            'message' => ['required', 'string', 'max:1000']
+		]);
 
-        if ($doc == null) {
-            $number = 1;
-        } else{
-            $number = count($doc)+1;
-        }
+        $created = Feedback::create(
+			$request->only(['firstName', 'lastName','message'])
+		);
 
-        //вырезание скобки
-        $contents = file_get_contents('doc/feedback.json');
-        rtrim($contents);
-        $contents = substr($contents, 0, -2);
+		if($created) {
+			return redirect()->route('users.feedback.create')
+				     ->with('success', 'Запись успешно добавлена');
+		}
 
-        file_put_contents(public_path('doc/feedback.json'), $contents);
+		return back()->with('error', 'Не удалось добавить запись')
+			->withInput();
 
-
-        //добавление новых данных
-        $data = json_encode($request->all());
-
-        $data = ',"'.$number.'": ' . $data . '}';
-
-        file_put_contents(public_path('doc/feedback.json'), $data, FILE_APPEND | LOCK_EX);
-
-        if (!empty(response()->json($request->all()))){
-            $message = 'success';
-            //echo $message;
-        }
-
-        return view('users.feedback.index',['message' => $message]);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  Feedback $feedback
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Feedback $feedback,$id)
     {
-        $data =json_decode(file_get_contents('doc/feedback.json'), true);
-        return view('users.feedback.show',['data' => $data]);
+       /* $feedback = Feedback::query()->slect(
+            Feedback::$availableFields
+        )->where('id','=',$id)
+        ->get();
+
+        return view('users.feedback.show',[
+            'data' => $feedback
+        ]);*/
     }
 
     /**
@@ -108,11 +109,27 @@ class FeedbackController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  Feedback  $feedback
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Feedback $feedback,$id)
     {
-        //
+        $feedback = Feedback::where('id','=',$id)->delete();
+        if ($feedback != null){
+            $message = "Комментарий удален";
+            $status = "success";
+        }
+        else {
+            $message = "Что пошло не так";
+            $status = "error";
+        }
+
+        $response = [
+            'message' => $message,
+            'status' => $status
+        ];
+
+        echo json_encode($response, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+        die();
     }
 }

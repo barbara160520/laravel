@@ -10,14 +10,7 @@
     </div>
 @endsection
 @section('content')
-    @if($errors->any())
-        @foreach($errors->all() as $error)
-            <x-alert type="danger" :message="$error"></x-alert>
-        @endforeach
-    @endif
-    @if ($message == "success")
-            <x-alert type="success" message="Успех! Новость добавлена" ></x-alert>
-    @endif
+@include('inc.message')
     <div>
         <form method="post" action="{{ route('admin.news.store') }}">
             @csrf
@@ -42,15 +35,11 @@
                 </select>
             </div>
             <div class="form-group">
-                <label for="status">Категория</label>
+                <label for="category_id">Категория</label>
                 <select class="form-control" name="category_id" id="category_id">
-                    <option value="1" @if(old('category_id') === '1') selected @endif>Спорт</option>
-                    <option value="2" @if(old('category_id') === '2') selected @endif>Искусство</option>
-                    <option value="3" @if(old('category_id') === '3') selected @endif>Политика</option>
-                    <option value="4" @if(old('category_id') === '4') selected @endif>ЧП/ЧС</option>
-                    <option value="5" @if(old('category_id') === '5') selected @endif>Природа</option>
-                    <option value="6" @if(old('category_id') === '6') selected @endif>Шоу-Бизнес</option>
-                    <option value="13" @if(old('category_id') === '13') selected @endif>IT-сфера</option>
+                    @foreach($categories as $category)
+                        <option value="{{ $category->id }}">{{ $category->title }}</option>
+                    @endforeach
                 </select>
             </div>
             <div class="form-group">

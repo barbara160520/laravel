@@ -21,8 +21,14 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link @if(request()->routeIs('admin.category.*')) active @endif" href="{{ route('admin.category.index') }}">
-                    <span data-feather="layers"></span>
+                    <span data-feather="list"></span>
                     Категории
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @if(request()->routeIs('admin.source.*')) active @endif" href="{{ route('admin.source.index') }}">
+                    <span data-feather="layers"></span>
+                    Ресурсы
                 </a>
             </li>
             <li class="nav-item">

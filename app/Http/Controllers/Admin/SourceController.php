@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\Category;
+use App\Models\Source;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use PhpOption\Some;
 
-class CategoryController extends Controller
+class SourceController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,11 +16,13 @@ class CategoryController extends Controller
      */
     public function index()
     {
-		$categories = Category::with('news')->paginate(5);
+		$data = Source::query()->select(
+            Source::$availableFields
+        )->paginate(5);
         $message = "";
 
-        return view('admin.category.index',[
-            'categories' => $categories,
+        return view('admin.source.index',[
+            'data' => $data,
             'message' => $message
     ]);
     }
@@ -32,7 +35,7 @@ class CategoryController extends Controller
     public function create()
     {
         //$message='';
-        return view('admin.category.create');
+        return view('admin.source.create');
     }
 
     /**
@@ -47,31 +50,27 @@ class CategoryController extends Controller
             'title' => ['required', 'string', 'min:5']
         ]);
 
-        $created = Category::create(
-			$request->only(['title','author','description'])
+        $created = Source::create(
+			$request->only(['title','url'])
 		);
 
 		if($created) {
-			return redirect()->route('admin.category.index')
+			return redirect()->route('admin.source.index')
 				     ->with('success', 'Запись успешно добавлена');
 		}
 
 		return back()->with('error', 'Не удалось добавить запись')
 			->withInput();
 
-        /*$model = new Category();
-		$data = $model->getAction('insert',$request->all('title','description'));
-
-        return view('admin.category.create',['message' => $data]);*/
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  Category $category
+     * @param  Source $source
      * @return \Illuminate\Http\Response
      */
-    public function show(Category $category)
+    public function show(Source $source)
     {
         //
     }
@@ -79,18 +78,13 @@ class CategoryController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  Category $category
+     * @param  Source $source
      * @return \Illuminate\Http\Response
      */
-    public function edit(Category $category)
+    public function edit(Source $source)
     {
-        /*$message = "";
-        $model = new Category();
-		$data = $model->getCategoriesById($id);
-        */
-
-        return view('admin.category.edit',[
-            'data' => $category
+        return view('admin.source.edit',[
+            'data' => $source
         ]);
     }
 
@@ -98,18 +92,18 @@ class CategoryController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  Category $category
+     * @param  source $source
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Category $category)
+    public function update(Request $request, Source $source)
     {
-        $updated = $category->fill($request->only([
-            'title','author','description'
+        $updated = $source->fill($request->only([
+            'title','url'
             ]))
         ->save();
 
         if($updated) {
-            return redirect()->route('admin.category.index')
+            return redirect()->route('admin.source.index')
                 ->with('success', 'Запись успешно обновлена');
         }
 
@@ -119,15 +113,15 @@ class CategoryController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  Category $category)
+     * @param  int  Source $source)
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Category $category,$id)
+    public function destroy(Source $source,$id)
     {
-        $category = Category::where('id','=',$id)->delete();
+        $source = Source::where('id','=',$id)->delete();
 
-        if ($category != null){
-            $message = "Категория удалена";
+        if ($source != null){
+            $message = "Ресурс удален";
         }
         else {
             $message = "Что пошло не так";

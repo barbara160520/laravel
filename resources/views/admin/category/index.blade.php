@@ -13,6 +13,7 @@
 @endsection
 @section('content')
 <div class="table-responsive">
+@include('inc.message')
   <table class="table table-bordered">
             <thead>
                <tr>
@@ -24,16 +25,16 @@
                </tr>
             </thead>
             <tbody>
-              @forelse($data as $categoryItem)
-                <tr id="{{$categoryItem->id}}">
-                    <td>{{ $categoryItem->id }}</td>
-                    <td>{{ $categoryItem->title }}</td>
-                    <td>{{ $categoryItem->count_categories }}</td>
-                    <td>{{ $categoryItem->description }}</td>
+              @forelse($categories as $category)
+                <tr id="{{$category->id}}">
+                    <td>{{ $category->id }}</td>
+                    <td>{{ $category->title }}</td>
+                    <td>{{ $category->news->count() }}</td>
+                    <td>{{ $category->description }}</td>
                     <td>
                         <p class="btn-group">
-                            <a class="btn btn-sm btn-outline-primary" href="{{ route('admin.category.edit', ['category' => $categoryItem->id]) }}">Редактировать</a> &nbsp;
-                            <button class="delete btn btn-sm btn-outline-danger" data-id="{{$categoryItem->id}}">Удалить</button>
+                            <a class="btn btn-sm btn-outline-primary" href="{{ route('admin.category.edit', ['category' => $category]) }}">Редактировать</a> &nbsp;
+                            <button class="delete btn btn-sm btn-outline-danger" data-id="{{$category->id}}">Удалить</button>
                         </p>
                     </td>
                 </tr>
@@ -42,6 +43,7 @@
               @endforelse
             </tbody>
         </table>
+        {{ $categories->links() }}
     </div>
 <script>
     let buttons = document.querySelectorAll('.delete');

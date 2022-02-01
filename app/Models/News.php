@@ -2,9 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Schema\Builder;
 
 class News extends Model
 {
@@ -12,61 +13,26 @@ class News extends Model
 
     protected $table = 'news';
 
-	public function getNews(): array
+	public static $availableFields = [
+		'id', 'title', 'author', 'status', 'description', 'created_at','category_id'
+	];
+
+	protected $fillable = [
+		'category_id',
+		'title',
+		'slug',
+		'author',
+		'status',
+		'description'
+	];
+
+    protected $casts = [
+		'display' => 'boolean'
+	];
+
+	public function category(): BelongsTo
 	{
-		return DB::table($this->table)
-			->select(['id', 'title', 'slug','category_id',  'author', 'status', 'description', 'category' => DB::table('categories')
-                ->select('title')
-                ->whereColumn('categories.id','news.category_id')])
-            ->get()
-			->toArray();
+		return $this->belongsTo(Category::class, 'category_id', 'id');
 	}
 
-    public function getNewsByCategory(int $id){
-        return DB::table($this->table)
-        ->select(['id', 'title', 'slug','category_id',  'author', 'status', 'description', 'category' => DB::table('categories')
-            ->select('title')
-            ->whereColumn('categories.id','news.category_id')])
-        ->where('category_id','=',$id)
-        ->get()
-        ->toArray();
-    }
-
-    public function getIdCategory(int $id){
-        return DB::table($this->table)
-        ->where('id','=',$id)
-        ->value('category_id');
-    }
-
-	public function getNewsById(int $id)
-	{
-		return DB::table($this->table)->find($id);
-	}
-
-    public function getAction($action,$data){
-        switch($action){
-            case 'insert':
-                DB::table($this->table)->insert([
-                    'title' => $data['title'],
-                    'author' => $data['author'],
-                    'status' => $data['status'],
-                    'description' => $data['description'],
-                    'slug' => $data['slug'],
-                    'category_id' => $data['category_id']
-                ]);
-                return 'success';
-            case 'update':
-                DB::table($this->table)
-                ->where('id','=',$data['id'],)
-                ->update($data);
-                return 'success';
-            case 'delete':
-                DB::table($this->table)
-                ->where('id','=',$data,)
-                ->delete();
-                return 'success';
-            default:
-                return 'error';
-        }
-    }
 }

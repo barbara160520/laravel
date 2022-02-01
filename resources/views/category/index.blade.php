@@ -28,18 +28,18 @@
 						<strong>{{ $categoryItem->title }}</strong>
 					</div>
 					<p class="card-text">{!! $categoryItem->description !!}</p>
-					<div>Количество новостей: {{$categoryItem->count_categories }}</div>
+					<div>Количество новостей: {{$categoryItem->news->count() }}</div>
 					<div class="d-flex justify-content-between align-items-center">
 						<div class="btn-group">
                         <a href="{{ route('category.show', ['id' => $categoryItem->id]) }}" type="button" class="btn btn-sm btn-outline-secondary">Подробнее</a>
-                            <small class="text-muted">{{ now('Europe/Moscow') }}</small>
+                            <small class="text-muted">{{ $categoryItem->created_at }}</small>
                         </div>
 					</div>
 				</div>
 			</div>
 		</div>
 @empty
-	<h1>Новостей нет</h1>
+	<h1>Категорий нет</h1>
 @endforelse
 </div>
 </div>

@@ -10,36 +10,33 @@ class CategoryController extends Controller
     public function index()
 	{
 
-        $model = new Category();
-		$data = $model->getCategories();
+        //$model = new Category();
+		$category = Category::query()->select(
+            Category::$availableFields
+        )->get();
 
 		return view('category.index',[
-            'category' => $data
+            'category' => $category
         ]);
 
 	}
 
-    public function show(int $id)
+    public function show(Category $category,$id)
 	{
-		if($id > 15) {
-			abort(404);
-		}
-        $model = new Category();
-		$data = $model->getCategoriesById($id);
 
-        $new = new News();
-		$news = $new->getNewsByCategory($id);
+        $category = Category::query()->select(
+            Category::$availableFields
+        )->where('id','=',$id)
+        ->get();
 
-        $category = $model->getOneCategory($id);
-
-        $count = $model->getCount($id);
+        $news = News::query()->select(
+            News::$availableFields
+        )->where('category_id','=',$id)
+        ->get();
 
 		return view('category.show', [
-			'categoryItem' => $data,
-            'news' => $news,
-            'count' => $count,
-            'id' => $id,
-            'category' => $category
+			'category' => $category,
+            'news' => $news
 		]);
 	}
 }

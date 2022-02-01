@@ -7,12 +7,12 @@
 <div class="row mb-1" style="justify-content: center;">
 <div class="col-md-10">
 <article class="blog-post">
-    <h2 class="blog-post-title">{{$category}}</h2>
-    <p class="blog-post-meta">Количество  новостей: {{$count}}</p>
+    <h2 class="blog-post-title">{{$category[0]->title}}</h2>
+    <p class="blog-post-meta">Количество  новостей: {{$category[0]->news->count()}}</p>
     <h3>О данном разделе:</h3>
-    <p class="blog-post-text">{{$categoryItem->description}}</p>
+    <p class="blog-post-text">{{$category[0]->description}}</p>
 
-<a href="{{ route('category.index') }}" type="button" class="btn btn-sm btn-outline-secondary">Назад</a>
+<a href="{{ route('category.index') }}" type="button" class="btn btn-sm btn-outline-secondary">Все Категории</a>
 </article>
 
 <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
@@ -29,7 +29,7 @@
 					<div class="d-flex justify-content-between align-items-center">
 						<div class="btn-group">
                         <a href="{{ route('news.show', ['id' => $newsItem->id]) }}" type="button" class="btn btn-sm btn-outline-secondary">Подробнее</a>
-                            <small class="text-muted">{{ now('Europe/Moscow') }}</small>
+                            <small class="text-muted">{{ $newsItem->created_at }}</small>
                         </div>
 					</div>
 				</div>

@@ -4,12 +4,11 @@
 @section('content')
   <main class="px-3">
   <h4 class="mb-3">Напишите нам</h4>
-    @if ($message == "success")
-            <x-alert type="success" message="Сообщение отправлено" ></x-alert>
-    @endif
+    @include('inc.message')
     <div>
         <form method="post" action="{{ route('users.feedback.store') }}">
         @csrf
+
             <div class="row g-3">
             <div class="col-sm-6">
               <label for="firstName" class="form-label">Имя</label>

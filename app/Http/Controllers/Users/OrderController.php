@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Users;
 
+use App\Models\Order;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
@@ -14,8 +15,15 @@ class OrderController extends Controller
      */
     public function index()
     {
-        $data=json_decode(file_get_contents('doc/order.json'), true);
-        return view('users.order.index',['data'=>$data]);
+        $data = Order::query()->select(
+            Order::$availableFields
+        )->get();
+
+        $message="";
+        return view('users.order.index',[
+            'data'=>$data,
+            'message'=>$message
+        ]);
     }
 
     /**
@@ -25,8 +33,7 @@ class OrderController extends Controller
      */
     public function create()
     {
-        $message='';
-        return view('users.order.create',['message'=>$message]);
+        return view('users.order.create');
     }
 
     /**
@@ -37,50 +44,40 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
-        //вычисления ключа
-        $doc = json_decode(file_get_contents('doc/order.json'), true);
-        if ($doc == null) {
-            $number = 1;
-        } else{
-            $number = count($doc)+1;
-        }
-
-        //вырезание скобки
-        $contents = file_get_contents('doc/order.json');
-        rtrim($contents);
-        $contents = substr($contents, 0, -2);
-
-        file_put_contents(public_path('doc/order.json'), $contents);
-
-        /*$request->validate([
+        $request->validate([
 			'firstName' => ['required', 'string', 'min:5'],
             'lastName' => ['required', 'string', 'min:4']
-		]);*/
+		]);
 
-        //добавление новых данных
-        $data = json_encode($request->all());
+        $created = Order::create(
+			$request->only(['firstName', 'lastName','email','phone','order'])
+		);
 
-        $data = ',"'.$number.'": ' . $data . '}';
+		if($created) {
+			return redirect()->route('users.order.create')
+				     ->with('success', 'Запись успешно добавлена');
+		}
 
-        file_put_contents(public_path('doc/order.json'), $data, FILE_APPEND | LOCK_EX);
-
-        if (!empty(response()->json($request->all()))){
-            $message = 'success';
-            //echo $message;
-        }
-
-        return view('users.order.index',['message'=>$message]);
+		return back()->with('error', 'Не удалось добавить запись')
+			->withInput();
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  Order $order
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Order $order,$id)
     {
-        //
+        /*$order = Order::query()->select(
+            Order::$availableFields
+        )->where('id','=',$id)
+        ->get();
+
+        return view('users.order.show',[
+            'data' => $order
+        ]);*/
     }
 
     /**
@@ -109,11 +106,27 @@ class OrderController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  Order  $order
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Order $order,$id)
     {
-        //
+        $order = Order::where('id','=',$id)->delete();
+        if ($order != null){
+            $message = "Заказ №{$id} удален";
+            $status = "success";
+        }
+        else {
+            $message = "Что пошло не так";
+            $status = "error";
+        }
+
+        $response = [
+            'message' => $message,
+            'status' => $status
+        ];
+
+        echo json_encode($response, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+        die();
     }
 }

@@ -10,14 +10,7 @@
     </div>
 @endsection
 @section('content')
-    @if($errors->any())
-        @foreach($errors->all() as $error)
-            <x-alert type="danger" :message="$error"></x-alert>
-        @endforeach
-    @endif
-    @if ($message == "success")
-            <x-alert type="success" message="Успех! Категория добавлена" ></x-alert>
-    @endif
+@include('inc.message')
     <div>
         <form method="post" action="{{ route('admin.category.store') }}">
         @csrf

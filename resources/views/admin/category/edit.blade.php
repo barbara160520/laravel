@@ -9,12 +9,10 @@
             <x-alert type="danger" :message="$error"></x-alert>
         @endforeach
     @endif
-    @if ($message == "success")
-            <x-alert type="success" message="Успех! Запись отредактирована" ></x-alert>
-    @endif
     <div>
-        <form method="get" action="{{ route('admin.category.update',['category' => $data->id]) }}">
+        <form method="post" action="{{ route('admin.category.update',['category' => $data]) }}">
         @csrf
+        @method('put')
             <div class="form-group">
                 <label for="title">Наименование категории</label>
                 <input type="text" class="form-control" id="title" name="title" value="{{ $data->title }}">

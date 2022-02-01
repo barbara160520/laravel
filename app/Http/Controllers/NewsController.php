@@ -9,8 +9,9 @@ class NewsController extends Controller
 {
 	public function index()
 	{
-		$model = new News();
-		$news = $model->getNews();
+		$news = News::query()->select(
+			News::$availableFields
+		)->get();
 
 		return view('news.index', [
 			'news' => $news
@@ -18,18 +19,15 @@ class NewsController extends Controller
 
 	}
 
-	public function show(int $id)
+	public function show(News $news,$id)
 	{
-		if($id > 10) {
-			abort(404);
-		}
-		$model = new News();
-		$news = $model->getNewsById($id);
-        $category = $model->getIdCategory($id);
+        $news = News::query()->select(
+			News::$availableFields
+		)->where('id','=',$id)
+        ->get();
 
 		return view('news.show', [
-			'newsItem' => $news,
-            'category_id' => $category
+			'news' => $news
 		]);
 	}
 

@@ -33,7 +33,7 @@
 					<div class="d-flex justify-content-between align-items-center">
 						<div class="btn-group">
                         <a href="{{ route('news.show', ['id' => $newsItem->id]) }}" type="button" class="btn btn-sm btn-outline-secondary">Подробнее</a>
-                            <small class="text-muted">{{ now('Europe/Moscow') }}</small>
+                            <small class="text-muted">{{ $newsItem->created_at }}</small>
                         </div>
 					</div>
 				</div>

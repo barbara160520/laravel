@@ -4,14 +4,7 @@
 @section('content')
   <main class="px-3">
   <h4 class="mb-3">Оформление Заказа</h4>
-  @if($errors->any())
-        @foreach($errors->all() as $error)
-            <x-alert type="danger" :message="$error"></x-alert>
-        @endforeach
-    @endif
-    @if ($message == "success")
-            <x-alert type="success" message="Успех! Заказ оформлен" ></x-alert>
-    @endif
+@include('inc.message')
   <form class="needs-validation"  method="post" action="{{ route('users.order.store') }}">
   @csrf
   <div class="row g-3">
