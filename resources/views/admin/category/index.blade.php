@@ -8,7 +8,7 @@
                type="button" class="btn btn-sm btn-outline-secondary">Добавить категорию
             </a>
         </div>
-        <div id='message' data-type="success" class="note-item-text">{{$message}}</div>
+
     </div>
 @endsection
 @section('content')
@@ -34,7 +34,7 @@
                     <td>
                         <p class="btn-group">
                             <a class="btn btn-sm btn-outline-primary" href="{{ route('admin.category.edit', ['category' => $category]) }}">Редактировать</a> &nbsp;
-                            <button class="delete btn btn-sm btn-outline-danger" data-id="{{$category->id}}">Удалить</button>
+                            <button class="delete btn btn-sm btn-outline-danger" rel="{{$category->id}}">Удалить</button>
                         </p>
                     </td>
                 </tr>
@@ -45,8 +45,34 @@
         </table>
         {{ $categories->links() }}
     </div>
+@endsection
+@push('js')
 <script>
-    let buttons = document.querySelectorAll('.delete');
+    document.addEventListener("DOMContentLoaded", function() {
+            const el = document.querySelectorAll(".delete");
+             el.forEach(function (e, k) {
+                 e.addEventListener('click', function() {
+                    const id = e.getAttribute("rel");
+                    if (confirm("Подтверждаете удаление записи с #ID =" + id + " ?")) {
+                        send('/admin/category/' + id).then(() => {
+                            location.reload();
+                        });
+                    }
+                });
+            });
+        });
+        async function send(url) {
+            let response = await fetch(url, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                }
+            });
+            let result = await response.json();
+            return result.ok;
+        }
+
+/*    let buttons = document.querySelectorAll('.delete');
     buttons.forEach((elem) => {
         elem.addEventListener('click', () => {
             let id = elem.getAttribute('data-id');
@@ -64,6 +90,6 @@
                 }
             )();
         });
-    });
+    });*/
 </script>
-@endsection
+@endpush

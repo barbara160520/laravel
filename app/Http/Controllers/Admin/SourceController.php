@@ -5,7 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Models\Source;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use PhpOption\Some;
+use App\Http\Requests\Source\CreateRequest;
+use Illuminate\Support\Facades\Log;
 
 class SourceController extends Controller
 {
@@ -34,25 +35,18 @@ class SourceController extends Controller
      */
     public function create()
     {
-        //$message='';
         return view('admin.source.create');
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  CreateRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CreateRequest $request)
     {
-        $request->validate([
-            'title' => ['required', 'string', 'min:5']
-        ]);
-
-        $created = Source::create(
-			$request->only(['title','url'])
-		);
+        $created = Source::create($request->validate());
 
 		if($created) {
 			return redirect()->route('admin.source.index')
@@ -83,9 +77,9 @@ class SourceController extends Controller
      */
     public function edit(Source $source)
     {
-        return view('admin.source.edit',[
+        /*return view('admin.source.edit',[
             'data' => $source
-        ]);
+        ]);*/
     }
 
     /**
@@ -97,7 +91,7 @@ class SourceController extends Controller
      */
     public function update(Request $request, Source $source)
     {
-        $updated = $source->fill($request->only([
+        /*$updated = $source->fill($request->only([
             'title','url'
             ]))
         ->save();
@@ -108,7 +102,7 @@ class SourceController extends Controller
         }
 
         return back()->with('error', 'Не удалось обновить запись')
-            ->withInput();
+            ->withInput();*/
     }
     /**
      * Remove the specified resource from storage.
@@ -116,10 +110,15 @@ class SourceController extends Controller
      * @param  int  Source $source)
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Source $source,$id)
+    public function destroy(Source $source)
     {
-        $source = Source::where('id','=',$id)->delete();
-
+        try{
+            $source->delete();
+            return response()->json('ok');
+        }catch(\Exception $e){
+            Log::error("Ошибка удаления");
+        }
+        /*$source = Source::where('id','=',$id)->delete();
         if ($source != null){
             $message = "Ресурс удален";
         }
@@ -131,6 +130,6 @@ class SourceController extends Controller
             'message' => $message
         ];
         echo json_encode($response, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
-        die();
+        die();*/
     }
 }

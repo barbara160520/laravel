@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Users;
 use App\Models\Order;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Requests\Order\CreateRequest;
+use Illuminate\Support\Facades\Log;
 
 class OrderController extends Controller
 {
@@ -39,19 +41,12 @@ class OrderController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  CreateRequest $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CreateRequest $request)
     {
-        $request->validate([
-			'firstName' => ['required', 'string', 'min:5'],
-            'lastName' => ['required', 'string', 'min:4']
-		]);
-
-        $created = Order::create(
-			$request->only(['firstName', 'lastName','email','phone','order'])
-		);
+        $created = Order::create($request->validated());
 
 		if($created) {
 			return redirect()->route('users.order.create')
@@ -109,8 +104,15 @@ class OrderController extends Controller
      * @param  Order  $order
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Order $order,$id)
+    public function destroy(Order $order)
     {
+        try{
+            $order->delete();
+            return response()->json('ok');
+        }catch(\Exception $e){
+            Log::error("Ошибка удаления");
+        }
+        /*
         $order = Order::where('id','=',$id)->delete();
         if ($order != null){
             $message = "Заказ №{$id} удален";
@@ -127,6 +129,6 @@ class OrderController extends Controller
         ];
 
         echo json_encode($response, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
-        die();
+        die();*/
     }
 }

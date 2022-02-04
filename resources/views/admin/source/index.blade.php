@@ -31,7 +31,7 @@
                     <td><a href="#">{{$source->url}}</a></td>
                     <td>
                         <p class="btn-group">
-                            <button class="delete btn btn-sm btn-outline-danger" data-id="{{$source->id}}">Удалить</button>
+                            <button class="delete btn btn-sm btn-outline-danger" rel="{{$source->id}}">Удалить</button>
                         </p>
                     </td>
                 </tr>
@@ -42,8 +42,33 @@
         </table>
         {{ $data->links() }}
     </div>
-    <script>
-    let buttons = document.querySelectorAll('.delete');
+@endsection
+@push('js')
+<script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const el = document.querySelectorAll(".delete");
+             el.forEach(function (e, k) {
+                 e.addEventListener('click', function() {
+                    const id = e.getAttribute("rel");
+                    if (confirm("Подтверждаете удаление записи с #ID =" + id + " ?")) {
+                        send('/admin/source/' + id).then(() => {
+                            location.reload();
+                        });
+                    }
+                });
+            });
+        });
+        async function send(url) {
+            let response = await fetch(url, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                }
+            });
+            let result = await response.json();
+            return result.ok;
+        }
+   /* let buttons = document.querySelectorAll('.delete');
     buttons.forEach((elem) => {
         elem.addEventListener('click', () => {
             let id = elem.getAttribute('data-id');
@@ -61,6 +86,6 @@
                 }
             )();
         });
-    });
+    });*/
 </script>
-@endsection
+@endpush

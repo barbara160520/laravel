@@ -3,7 +3,6 @@
 @section('header')
     <h1 class="h2">Заказы</h1>
     <div class="btn-toolbar mb-2 mb-md-0">
-    <div id='message' data-type="success" class="note-item-text">{{$message}}</div>
     </div>
 @endsection
 @section('content')
@@ -23,7 +22,7 @@
                     {{$orderItem->email}}
                 </strong>
                     <div class="mb-1 text-muted">{{now('Europe/Moscow')}}</div>
-                    <button class="delete btn btn-sm btn-outline-danger" data-id="{{$orderItem->id}}">Удалить</button>
+                    <button class="delete btn btn-sm btn-outline-danger" rel="{{$orderItem->id}}">Удалить</button>
                 </div>
             </div>
         </div>
@@ -31,8 +30,35 @@
 	        <h1>Заказов нет</h1>
         @endforelse
         </div>
-        <script>
-    let buttons = document.querySelectorAll('.delete');
+@endsection
+@push('js')
+<script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const el = document.querySelectorAll(".delete");
+             el.forEach(function (e, k) {
+                 e.addEventListener('click', function() {
+                    const id = e.getAttribute("rel");
+                    if (confirm("Подтверждаете удаление записи с #ID =" + id + " ?")) {
+                        send('/users/order/' + id).then(() => {
+                            location.reload();
+                        });
+                    }
+                });
+            });
+        });
+        async function send(url) {
+            let response = await fetch(url, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                }
+            });
+            let result = await response.json();
+            return result.ok;
+        }
+
+
+   /* let buttons = document.querySelectorAll('.delete');
     buttons.forEach((elem) => {
         elem.addEventListener('click', () => {
             let id = elem.getAttribute('data-id');
@@ -50,7 +76,6 @@
                 }
             )();
         });
-    });
-</script>
-@endsection
-
+    });*/
+    </script>
+@endpush

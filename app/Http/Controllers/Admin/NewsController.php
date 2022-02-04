@@ -6,6 +6,9 @@ use App\Models\News;
 use App\Models\Category;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Requests\News\CreateRequest;
+use App\Http\Requests\News\EditRequest;
+use Illuminate\Support\Facades\Log;
 
 class NewsController extends Controller
 {
@@ -47,19 +50,12 @@ class NewsController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  CreateRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CreateRequest $request)
     {
-        $request->validate([
-			'title' => ['required', 'string', 'min:5'],
-            'author' => ['required', 'string', 'min:4']
-		]);
-
-        $created = News::create(
-			$request->only(['category_id', 'title','slug', 'author', 'status', 'description'])
-		);
+        $created = News::create($request->validated());
 
 		if($created) {
 			return redirect()->route('admin.news.index')
@@ -99,23 +95,13 @@ class NewsController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  EditRequest   $request
      * @param  News $news
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, News $news)
+    public function update(EditRequest  $request, News $news)
     {
-        /*$model = new News();
-		$data = $model->getAction('insert',$request
-        ->all('title', 'author','slug','category_id', 'status', 'description'));
-
-        return view('admin.news.index',['message' => $data]);*/
-
-
-        $updated = $news->fill($request->only([
-            'category_id', 'title','slug', 'author', 'status', 'description'
-            ]))
-        ->save();
+		$updated = $news->fill($request->validated())->save();
 
         if($updated) {
             return redirect()->route('admin.news.index')
@@ -132,9 +118,15 @@ class NewsController extends Controller
      * @param  News $news
      * @return \Illuminate\Http\Response
      */
-    public function destroy(News $news,$id)
+    public function destroy(News $news)
     {
-        $news = News::where('id','=',$id)->delete();
+        try{
+            $news->delete();
+            return response()->json('ok');
+        }catch(\Exception $e){
+            Log::error("Ошибка удаления");
+        }
+        /*$news = News::where('id','=',$id)->delete();
         if ($news != null){
             $message = "Новость удалена";
             $status = "success";
@@ -150,6 +142,6 @@ class NewsController extends Controller
         ];
 
         echo json_encode($response, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
-        die();
+        die();*/
     }
 }

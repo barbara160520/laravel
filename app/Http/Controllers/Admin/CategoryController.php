@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Models\Category;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Requests\Category\CreateRequest;
+use App\Http\Requests\Category\EditRequest;
+use Illuminate\Support\Facades\Log;
 
 class CategoryController extends Controller
 {
@@ -31,25 +34,18 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        //$message='';
         return view('admin.category.create');
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  CreateRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CreateRequest $request)
     {
-        $request->validate([
-            'title' => ['required', 'string', 'min:5']
-        ]);
-
-        $created = Category::create(
-			$request->only(['title','author','description'])
-		);
+        $created = Category::create($request->validate());
 
 		if($created) {
 			return redirect()->route('admin.category.index')
@@ -59,10 +55,6 @@ class CategoryController extends Controller
 		return back()->with('error', 'Не удалось добавить запись')
 			->withInput();
 
-        /*$model = new Category();
-		$data = $model->getAction('insert',$request->all('title','description'));
-
-        return view('admin.category.create',['message' => $data]);*/
     }
 
     /**
@@ -84,11 +76,6 @@ class CategoryController extends Controller
      */
     public function edit(Category $category)
     {
-        /*$message = "";
-        $model = new Category();
-		$data = $model->getCategoriesById($id);
-        */
-
         return view('admin.category.edit',[
             'data' => $category
         ]);
@@ -97,16 +84,13 @@ class CategoryController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  EditRequest  $request
      * @param  Category $category
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Category $category)
+    public function update(EditRequest $request, Category $category)
     {
-        $updated = $category->fill($request->only([
-            'title','author','description'
-            ]))
-        ->save();
+        $updated = $category->fill($request->validate())->save();
 
         if($updated) {
             return redirect()->route('admin.category.index')
@@ -122,10 +106,15 @@ class CategoryController extends Controller
      * @param  int  Category $category)
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Category $category,$id)
+    public function destroy(Category $category)
     {
-        $category = Category::where('id','=',$id)->delete();
-
+        try{
+            $category->delete();
+            return response()->json('ok');
+        }catch(\Exception $e){
+            Log::error("Ошибка удаления");
+        }
+        /*$category = Category::where('id','=',$id)->delete();
         if ($category != null){
             $message = "Категория удалена";
         }
@@ -137,6 +126,6 @@ class CategoryController extends Controller
             'message' => $message
         ];
         echo json_encode($response, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
-        die();
+        die();*/
     }
 }

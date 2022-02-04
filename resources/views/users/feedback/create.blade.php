@@ -12,26 +12,20 @@
             <div class="row g-3">
             <div class="col-sm-6">
               <label for="firstName" class="form-label">Имя</label>
-              <input type="text" class="form-control" id="firstName" name="firstName" placeholder="" value="{{ old('firstName') }}" required>
-              <div class="invalid-feedback">
-                Укажите Ваше имя.
-              </div>
+              <input type="text" class="form-control" id="firstName" name="firstName" placeholder="" value="{{ old('firstName') }}" >
+              @error('firstName') <strong style="color:red;">{{ $message }}</strong> @enderror
             </div>
 
             <div class="col-sm-6">
               <label for="lastName" class="form-label">Фамилия</label>
-              <input type="text" class="form-control" id="lastName" name="lastName" placeholder="" value="{{ old('lastName') }}" required>
-              <div class="invalid-feedback">
-              Укажите Вашу фамилию.
-              </div>
+              <input type="text" class="form-control" id="lastName" name="lastName" placeholder="" value="{{ old('lastName') }}" >
+              @error('lastName') <strong style="color:red;">{{ $message }}</strong> @enderror
             </div>
 
             <div class="col-12">
               <label for="message" class="form-label">Ваше Сообщение</label>
-              <textarea type="text" class="form-control" name="message" id="message" placeholder="" required></textarea>
-              <div class="invalid-feedback">
-                Введите Ваше сообщение.
-              </div>
+              <textarea type="text" class="form-control" name="message" id="message" placeholder="" ></textarea>
+              @error('message') <strong style="color:red;">{{ $message }}</strong> @enderror
             </div>
 
           <hr class="my-4">

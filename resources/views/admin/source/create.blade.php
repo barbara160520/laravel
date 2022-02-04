@@ -17,10 +17,12 @@
             <div class="form-group">
                 <label for="title">Наименование</label>
                 <input type="text" class="form-control" id="title" name="title" value="{{ old('title') }}">
+                @error('title') <strong style="color:red;">{{ $message }}</strong> @enderror
             </div>
             <div class="form-group">
                 <label for="url">Адрес</label>
                 <input type="text" class="form-control" id="url" name="url" value="{{ old('url') }}">
+                @error('url') <strong style="color:red;">{{ $message }}</strong> @enderror
             </div>
             <br>
             <button type="submit" class="btn btn-success" style="float: right;">Сохранить</button>
