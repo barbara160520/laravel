@@ -18,9 +18,9 @@ use App\Http\Controllers\Users\FeedbackController;
 |
 */
 
-/*Route::get('/', function () {
+Route::get('/', function () {
     return view('welcome');
-});*/
+});
 
 Route::group(['prefix' => 'admin', 'as' => 'admin.'], function() {
 	Route::view('/', 'admin.index')

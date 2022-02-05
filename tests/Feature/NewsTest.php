@@ -2,12 +2,16 @@
 
 namespace Tests\Feature;
 
+use App\Models\Category;
+use App\Models\News;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class NewsTest extends TestCase
 {
+    use RefreshDatabase;
     /**
      * A basic feature test example.
      *
@@ -43,71 +47,14 @@ class NewsTest extends TestCase
 
 	public function testNewsAdminCreated()
 	{
-		$responseData = [
-        '*' => [
-            "_token" => 'some text',
-			'title' => 'Some title',
-			'author' => 'Admin',
-			'status' => 'DRAFT',
-			'description' => 'Some text'
-		]];
+        $category = Category::factory()->create();
+
+        $responseData = News::factory()->definition();
+        $response = $responseData + ['category_id' => $category->id];
 		$response = $this->post(route('admin.news.store'), $responseData);
 
-		$response->assertJson($responseData);
+		//$response->assertJson($responseData);
 		$response->assertStatus(200);
 	}
-
-    public function testCategoryAdminCreated()
-    {
-
-        $responseData = [
-             '*' => [
-                "_token" => 'some text',
-                'title' => 'Some title',
-                'description' => 'Some text'
-            ]
-        ];
-
-        $response = $this->postJson(route('admin.category.store'), $responseData);
-
-        $response->assertJson($responseData);
-        $response->assertStatus(200);
-    }
-
-    public function testValueRendered()
-    {
-        $view = $this->view('admin.index', ['name' => 'администратор']);
-
-        $view->assertSee('администратор');
-    }
-
-    public function testComponents()
-    {
-        $view = $this->blade(
-            '<x-alert type="danger" :message="$error"></x-alert>',
-            ['message' => 'The title field is required.']
-        );
-
-        $view->assertSee('The title field is required.');
-    }
-
-    public function testNewsJsonPath()
-    {
-        $response = $this->postJson(route('admin.news.store'),['author' => 'РИА Новости']);
-        $response
-        ->assertJsonPath('1.author','РИА Новости');
-    }
-
-    public function testCategoryJsonStructure()
-    {
-        $response = $this->get(route('admin.category.store'));
-        $response->assertJsonStructure([
-            '*' => [
-                "_token" => 'some text',
-                'title' => 'Some title',
-                'description' => 'Some text'
-            ]
-        ]);
-    }
 
 }

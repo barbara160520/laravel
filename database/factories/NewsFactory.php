@@ -3,14 +3,11 @@
 declare(strict_types=1);
 
 namespace Database\Factories;
-use Illuminate\Support\Facades\Storage as Str;
-//use Illuminate\Support\Facades\Schema as Str;
+use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Factories\Factory;
-
 
 class NewsFactory extends Factory
 {
-
     /**
      * Define the model's default state.
      *
