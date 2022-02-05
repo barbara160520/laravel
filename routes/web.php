@@ -1,4 +1,5 @@
 <?php
+
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\{CategoryController,NewsController};
 use App\Http\Controllers\Admin\NewsController as AdminNewsController;
@@ -6,6 +7,8 @@ use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\SourceController as AdminSourceController;
 use App\Http\Controllers\Users\OrderController;
 use App\Http\Controllers\Users\FeedbackController;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\Account\IndexController as AccountController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,22 +25,32 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::group(['prefix' => 'admin', 'as' => 'admin.'], function() {
-	Route::view('/', 'admin.index')
-    ->name('index');
-	Route::resource('/category', AdminCategoryController::class);
-    Route::resource('/news', AdminNewsController::class);
-    Route::resource('/source', AdminSourceController::class);
-    Route::get('/news/destroy/{id}', [AdminNewsController::class, 'destroy'])
-	->where('id', '\d+')
-	->name('news.destroy');
-    Route::get('/category/destroy/{id}', [AdminCategoryController::class, 'destroy'])
-	->where('id', '\d+')
-	->name('category.destroy');
-    Route::get('/source/destroy/{id}', [AdminSourceController::class, 'destroy'])
-	->where('id', '\d+')
-	->name('source.destroy');
-});
+Route::group(['middleware' => 'auth'], function() {
+    Route::get('/account', AccountController::class)
+        ->name('account');
+
+    Route::get('/logout', function() {
+        Auth::logout();
+        return redirect()->route('login');
+    })->name('account.logout');
+
+    Route::group(['as' => 'admin.', 'prefix' => 'admin', 'middleware' => 'admin'], function() {
+        Route::view('/', 'admin.index')
+        ->name('index');
+        Route::resource('/category', AdminCategoryController::class);
+        Route::resource('/news', AdminNewsController::class);
+        Route::resource('/source', AdminSourceController::class);
+        Route::get('/news/destroy/{id}', [AdminNewsController::class, 'destroy'])
+        ->where('id', '\d+')
+        ->name('news.destroy');
+        Route::get('/category/destroy/{id}', [AdminCategoryController::class, 'destroy'])
+        ->where('id', '\d+')
+        ->name('category.destroy');
+        Route::get('/source/destroy/{id}', [AdminSourceController::class, 'destroy'])
+        ->where('id', '\d+')
+        ->name('source.destroy');
+    });
+    });
 
 Route::group(['prefix' => 'users', 'as' => 'users.'], function() {
 	Route::resource('/order', OrderController::class);
@@ -68,10 +81,14 @@ Route::get('/news/{id}', [NewsController::class, 'show'])
     ->name('news.show');
 
 
-/*Route::get('/collection', function() {
-    $array = ['Anna', 'Victor', 'Alexey', 'dima', 'ira', 'Vasya', 'olya'];
-    $collection = collect($array);
-    dd($collection->map(function ($item) {
-        return mb_strtoupper($item);
-    })->sortKeys());
-});*/
+    Route::get('/session', function() {
+        if(session()->has('test')) {
+            //dd(session()->all(), session()->get('test'));
+            session()->forget('test');
+        }
+
+        session(['test' => rand(1,1000)]);
+   });
+   Auth::routes();
+
+   Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
