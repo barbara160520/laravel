@@ -5,8 +5,10 @@ use App\Http\Controllers\{CategoryController,NewsController};
 use App\Http\Controllers\Admin\NewsController as AdminNewsController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\SourceController as AdminSourceController;
-use App\Http\Controllers\Users\OrderController;
-use App\Http\Controllers\Users\FeedbackController;
+use App\Http\Controllers\Users\{
+    OrderController,
+    FeedbackController,
+UserController};
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Account\IndexController as AccountController;
 
@@ -28,6 +30,9 @@ Route::get('/', function () {
 Route::group(['middleware' => 'auth'], function() {
     Route::get('/account', AccountController::class)
         ->name('account');
+        //проблема с обновлением,пока не работает
+    Route::get('/account/update', AccountController::class)
+    ->name('account.update');
 
     Route::get('/logout', function() {
         Auth::logout();
@@ -53,6 +58,12 @@ Route::group(['middleware' => 'auth'], function() {
     });
 
 Route::group(['prefix' => 'users', 'as' => 'users.'], function() {
+    Route::get('/', [UserController::class,'index'])
+    ->name('index');
+    Route::get('/toggleAdmin/{id}', [UserController::class, 'toggleAdmin'])
+	->where('id', '\d+')
+	->name('toggleAdmin');
+
 	Route::resource('/order', OrderController::class);
     Route::resource('/feedback', FeedbackController::class);
     Route::get('/order/destroy/{id}', [OrderController::class, 'destroy'])
@@ -70,7 +81,7 @@ Route::get('/category/{id}',[CategoryController::class, 'show'])
 ->where('category', '\d+')
 ->name('category.show');
 
-Route::view('/about','about.index',['controller' => 'controller'])
+Route::view('/about','about.index')
     ->name('about.index');
 
 Route::get('/news', [NewsController::class, 'index'])

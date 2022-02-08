@@ -17,9 +17,15 @@
 -->                     <li><a href="{{route('users.feedback.create')}}" class="text-white">Обратная связь</a></li>
                         <li><a href="{{route('users.order.create')}}" class="text-white">ЗАКАЗ</a></li>
                     </ul>
+                    @if(Auth::user()->is_admin)
                     <a class="btn btn-sm btn-outline-secondary" href="{{ route('admin.index') }}">
-                        Админка
+                        Администрирование
                     </a>
+                    @else
+                    <a class="btn btn-sm btn-outline-secondary" href="{{ route('account') }}">
+                        Профиль
+                    </a>
+                    @endif
                 </div>
             </div>
         </div>

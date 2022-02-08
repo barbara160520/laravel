@@ -11,7 +11,11 @@ use Laravel\Sanctum\HasApiTokens;
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
-
+    protected $table = 'users';
+    /*public function getRole($id){
+        $role = $this->where('id','=',$id)
+        ->value('is_admin');
+    }*/
     /**
      * The attributes that are mass assignable.
      *
@@ -21,7 +25,11 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'is_admin'
     ];
+    public static $availableFields = [
+		'id', 'name', 'email', 'password', 'is_admin', 'created_at'
+	];
 
     /**
      * The attributes that should be hidden for serialization.

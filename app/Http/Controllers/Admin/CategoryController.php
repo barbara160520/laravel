@@ -114,18 +114,6 @@ class CategoryController extends Controller
         }catch(\Exception $e){
             Log::error("Ошибка удаления");
         }
-        /*$category = Category::where('id','=',$id)->delete();
-        if ($category != null){
-            $message = "Категория удалена";
-        }
-        else {
-            $message = "Что пошло не так";
-        }
 
-        $response = [
-            'message' => $message
-        ];
-        echo json_encode($response, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
-        die();*/
     }
 }
