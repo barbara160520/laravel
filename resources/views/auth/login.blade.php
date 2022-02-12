@@ -8,7 +8,7 @@
                 <div class="card-header">{{ __('Вход') }}</div>
 
                 <div class="card-body">
-                    <form method="POST" action="{{ route('login') }}">
+                   <form method="POST" action="{{ route('login') }}">
                         @csrf
 
                         <div class="row mb-3">
@@ -65,6 +65,11 @@
                             </div>
                         </div>
                     </form>
+                    <div class="col-md-3 icons">
+                    <a href="{{ route('social.redirect', ['network' => 'vkontakte']) }}"><i style="width: auto;" class="fa fa-3x fa-vk"></i></a>
+                    <a href="{{ route('social.redirect', ['network' => 'odnoklassniki']) }}"><i class="fa fa-3x fa-odnoklassniki-square"></i></a>
+                    </div>
+
                 </div>
             </div>
         </div>

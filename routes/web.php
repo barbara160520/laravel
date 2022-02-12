@@ -1,16 +1,22 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\{CategoryController,NewsController};
-use App\Http\Controllers\Admin\NewsController as AdminNewsController;
-use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
-use App\Http\Controllers\Admin\SourceController as AdminSourceController;
+use App\Http\Controllers\{
+    CategoryController,
+    NewsController,
+    SocialController
+};
 use App\Http\Controllers\Users\{
     OrderController,
     FeedbackController,
-UserController};
-use Illuminate\Support\Facades\Auth;
+    UserController
+};
+use App\Http\Controllers\Admin\ParserController;
 use App\Http\Controllers\Account\IndexController as AccountController;
+use App\Http\Controllers\Admin\NewsController as AdminNewsController;
+use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
+use App\Http\Controllers\Admin\SourceController as AdminSourceController;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -40,6 +46,8 @@ Route::group(['middleware' => 'auth'], function() {
     })->name('account.logout');
 
     Route::group(['as' => 'admin.', 'prefix' => 'admin', 'middleware' => 'admin'], function() {
+        Route::get('/parser', ParserController::class)
+		->name('parser');
         Route::view('/', 'admin.index')
         ->name('index');
         Route::resource('/category', AdminCategoryController::class);
@@ -92,14 +100,27 @@ Route::get('/news/{id}', [NewsController::class, 'show'])
     ->name('news.show');
 
 
-    Route::get('/session', function() {
-        if(session()->has('test')) {
-            //dd(session()->all(), session()->get('test'));
-            session()->forget('test');
-        }
+Route::get('/session', function() {
+    if(session()->has('test')) {
+        //dd(session()->all(), session()->get('test'));
+        session()->forget('test');
+    }
 
-        session(['test' => rand(1,1000)]);
-   });
-   Auth::routes();
+    session(['test' => rand(1,1000)]);
+});
+Auth::routes();
 
-   Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+Route::get('/admins', function() {
+	$users = \App\Models\User::query()->admins()->get();
+	dd($users);
+});
+
+Route::group(['middleware' => 'guest', 'prefix' => 'auth', 'as' => 'social.'], function() {
+	Route::get('/{network}/redirect', [SocialController::class, 'redirect'])
+	     ->name('redirect');
+
+	Route::get('/{network}/callback', [SocialController::class, 'callback'])
+		->name('callback');
+});

@@ -15,8 +15,15 @@
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
-
+    <link rel="stylesheet" href="css/font-awesome.css">
     <!-- Styles -->
+    <style>
+        .icons{
+            display: flex;
+            align-items: center;
+            justify-content: space-evenly;
+        }
+    </style>
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 </head>
 <body>

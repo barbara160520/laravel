@@ -28,7 +28,8 @@ class SourceSeeder extends Seeder
 
 			$data[] = [
 				'title' => $faker->text(mt_rand(10, 15)),
-                'url' => $faker->url()
+                'url' => $faker->url(),
+                'description' => $faker->text(mt_rand(100, 200))
 			];
 		}
 		return $data;

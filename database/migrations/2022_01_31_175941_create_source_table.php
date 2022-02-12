@@ -17,6 +17,8 @@ class CreateSourceTable extends Migration
             $table->id();
             $table->string('title',50);
             $table->string('url',155);
+			$table->text('description')->nullable();
+            $table->string('image', 255)->nullable();
             $table->timestamps();
         });
     }

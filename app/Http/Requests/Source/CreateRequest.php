@@ -27,7 +27,9 @@ class CreateRequest extends FormRequest
         return [
 
 			'title' => ['required', 'string', 'min:5'],
-			'url' => ['required', 'string', 'min:10']
+			'url' => ['required', 'string', 'min:10'],
+            'image' => ['nullable', 'file', 'image', 'mimes:jpg,png'],
+			'description' => ['nullable', 'string', 'max:1000']
         ];
     }
 

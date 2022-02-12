@@ -12,10 +12,7 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
     protected $table = 'users';
-    /*public function getRole($id){
-        $role = $this->where('id','=',$id)
-        ->value('is_admin');
-    }*/
+
     /**
      * The attributes that are mass assignable.
      *
@@ -50,4 +47,8 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'is_admin' => 'boolean'
     ];
+
+    public function scopeAdmins($query){
+        $query->where('is_admin',true);
+    }
 }

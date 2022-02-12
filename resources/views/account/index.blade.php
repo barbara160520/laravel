@@ -27,11 +27,15 @@
     </p>
     </div>
     <div class="col-lg-6" style="text-align: right;">
-    <svg class="bd-placeholder-img rounded-circle" width="200" height="200" role="img" aria-label="Фото пользователя" preserveAspectRatio="xMidYMid slice" focusable="false">
-            <title>Фото</title>
-            <rect width="100%" height="100%" fill="#777"/>
-            <text x="50%" y="50%" fill="#777" dy=".3em">пользователя</text>
-        </svg>
+    @if(Auth::user()->avatar)
+        <img class="bd-placeholder-img rounded-circle" src="{{ Auth::user()->avatar }}" style="width:200px;hight:200px;">
+    @else
+        <svg class="bd-placeholder-img rounded-circle" width="200" height="200" role="img" aria-label="Фото пользователя" preserveAspectRatio="xMidYMid slice" focusable="false">
+                <title>Фото</title>
+                <rect width="100%" height="100%" fill="#777"/>
+                <text x="50%" y="50%" fill="#777" dy=".3em">пользователя</text>
+            </svg>
+    @endif
     </div>
 </div>
 
