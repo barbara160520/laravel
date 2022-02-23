@@ -12,13 +12,13 @@
             <div class="row g-3">
             <div class="col-sm-6">
               <label for="firstName" class="form-label">Имя</label>
-              <input type="text" class="form-control" id="firstName" name="firstName" placeholder="" value="{{ old('firstName') }}" >
+              <input type="text" class="form-control" id="firstName" name="firstName" placeholder="" value="{{ explode(' ',Auth::user()->name)[0] }}" >
               @error('firstName') <strong style="color:red;">{{ $message }}</strong> @enderror
             </div>
 
             <div class="col-sm-6">
               <label for="lastName" class="form-label">Фамилия</label>
-              <input type="text" class="form-control" id="lastName" name="lastName" placeholder="" value="{{ old('lastName') }}" >
+              <input type="text" class="form-control" id="lastName" name="lastName" placeholder="" value="{{ explode(' ',Auth::user()->name)[1] }}" >
               @error('lastName') <strong style="color:red;">{{ $message }}</strong> @enderror
             </div>
 
@@ -39,3 +39,13 @@
 @section('footer')
 <footer class="mt-auto text-white-50"></footer>
 @endsection
+@push('js')
+    <script>
+        ClassicEditor
+            .create( document.querySelector( '#message' ) )
+            .catch( error => {
+                console.error( error );
+            } );
+    </script>
+@endpush
+

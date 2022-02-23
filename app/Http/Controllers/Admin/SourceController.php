@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\Source;
+use App\Services\ResourceService;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Requests\Source\CreateRequest;
@@ -17,9 +18,13 @@ class SourceController extends Controller
      */
     public function index()
     {
+        if(Source::all()->isEmpty()){
+            app(ResourceService::class)->getData();
+        }
+
 		$data = Source::query()->select(
             Source::$availableFields
-        )->paginate(5);
+        )->paginate(15);
         $message = "";
 
         return view('admin.source.index',[
@@ -118,18 +123,6 @@ class SourceController extends Controller
         }catch(\Exception $e){
             Log::error("Ошибка удаления");
         }
-        /*$source = Source::where('id','=',$id)->delete();
-        if ($source != null){
-            $message = "Ресурс удален";
-        }
-        else {
-            $message = "Что пошло не так";
-        }
 
-        $response = [
-            'message' => $message
-        ];
-        echo json_encode($response, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
-        die();*/
     }
 }

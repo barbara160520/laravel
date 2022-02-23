@@ -6,7 +6,7 @@
 @section('content')
     <div>
     @include('inc.message')
-        <form method="post" action="{{ route('admin.news.update', ['news' => $news]) }}">
+    <form method="post" action="{{ route('admin.news.update', ['news' => $news]) }}" enctype="multipart/form-data">
             @csrf
             @method('put')
             <div class="form-group">
@@ -43,6 +43,12 @@
                 @error('category_id') <strong style="color:red;">{{ $message }}</strong> @enderror
             </div>
             <div class="form-group">
+                <label for="image">Изображение</label>
+                <img  src="{{ Storage::disk('public')->url($news->image) }}""> &nbsp;
+                <button name="_method" value="delete" class="delete btn btn-sm btn-outline-danger"><i class="fa fa-times"></i></button>
+                <input type="file" class="form-control" id="image" name="image" >
+            </div>
+            <div class="form-group">
                 <label for="description">Описание</label>
                 <textarea class="form-control" name="description" id="description">{!! $news->description  !!}</textarea>
             </div>
@@ -53,3 +59,13 @@
         Назад</a>
     </div>
 @endsection
+@push('js')
+    <script>
+        ClassicEditor
+            .create( document.querySelector( '#description' ) )
+            .catch( error => {
+                console.error( error );
+            } );
+    </script>
+@endpush
+

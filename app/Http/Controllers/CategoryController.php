@@ -10,7 +10,6 @@ class CategoryController extends Controller
     public function index()
 	{
 
-        //$model = new Category();
 		$category = Category::query()->select(
             Category::$availableFields
         )->get();
@@ -21,17 +20,12 @@ class CategoryController extends Controller
 
 	}
 
-    public function show(Category $category,$id)
+    public function show(Category $category)
 	{
-
-        $category = Category::query()->select(
-            Category::$availableFields
-        )->where('id','=',$id)
-        ->get();
 
         $news = News::query()->select(
             News::$availableFields
-        )->where('category_id','=',$id)
+        )->where('category_id','=',$category->id)
         ->get();
 
 		return view('category.show', [

@@ -77,7 +77,7 @@ class CategoryController extends Controller
     public function edit(Category $category)
     {
         return view('admin.category.edit',[
-            'data' => $category
+            'category' => $category
         ]);
     }
 
@@ -90,7 +90,9 @@ class CategoryController extends Controller
      */
     public function update(EditRequest $request, Category $category)
     {
-        $updated = $category->fill($request->validate())->save();
+
+        $validated = $request->validated();
+        $updated = $category->fill($validated)->save();
 
         if($updated) {
             return redirect()->route('admin.category.index')

@@ -6,17 +6,17 @@
 @section('content')
 @include('inc.message')
     <div>
-        <form method="post" action="{{ route('admin.category.update',['category' => $data]) }}">
+        <form method="post" action="{{ route('admin.category.update',['category' => $category]) }}">
         @csrf
         @method('put')
             <div class="form-group">
                 <label for="title">Наименование категории</label>
-                <input type="text" class="form-control" id="title" name="title" value="{{ $data->title }}">
+                <input type="text" class="form-control" id="title" name="title" value="{{ $category->title }}">
                 @error('title') <strong style="color:red;">{{ $message }}</strong> @enderror
             </div>
             <div class="form-group">
                 <label for="description">Описание категории</label>
-                <textarea class="form-control" name="description" id="description">{!! $data->description !!}</textarea>
+                <textarea class="form-control" name="description" id="description">{!! $category->description !!}</textarea>
                 @error('description') <strong style="color:red;">{{ $message }}</strong> @enderror
             </div>
             <br>
@@ -27,3 +27,12 @@
     </div>
 
 @endsection
+@push('js')
+    <script>
+        ClassicEditor
+            .create( document.querySelector( '#description' ) )
+            .catch( error => {
+                console.error( error );
+            } );
+    </script>
+@endpush

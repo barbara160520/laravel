@@ -5,10 +5,12 @@ namespace App\Http\Controllers\Admin;
 use App\Models\News;
 use App\Models\Category;
 use App\Http\Controllers\Controller;
+use App\Services\UploadService;
 use Illuminate\Http\Request;
 use App\Http\Requests\News\CreateRequest;
 use App\Http\Requests\News\EditRequest;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class NewsController extends Controller
 {
@@ -20,9 +22,6 @@ class NewsController extends Controller
     public function index()
     {
 		$news = News::query()
-			/*->whereHas('category', function ($query) {
-				$query->where('id', '<', 10);
-			})*/
 			->with('category')
 			->select(News::$availableFields)
 			->paginate(5);
@@ -97,11 +96,19 @@ class NewsController extends Controller
      *
      * @param  EditRequest   $request
      * @param  News $news
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function update(EditRequest  $request, News $news)
     {
-		$updated = $news->fill($request->validated())->save();
+		$validated = $request->validated();
+
+
+		if($request->hasFile('image')) {
+			$validated['image'] = app(UploadService::class)->start($request->file('image'));
+
+            //dd($validated['image'],$updated);
+        }
+        $updated = $news->fill($validated)->save();
 
         if($updated) {
             return redirect()->route('admin.news.index')
@@ -120,28 +127,21 @@ class NewsController extends Controller
      */
     public function destroy(News $news)
     {
-        try{
-            $news->delete();
-            return response()->json('ok');
-        }catch(\Exception $e){
-            Log::error("Ошибка удаления");
-        }
-        /*$news = News::where('id','=',$id)->delete();
-        if ($news != null){
-            $message = "Новость удалена";
-            $status = "success";
-        }
-        else {
-            $message = "Что пошло не так";
-            $status = "error";
-        }
 
-        $response = [
-            'message' => $message,
-            'status' => $status
-        ];
+        if(substr($_SERVER['HTTP_REFERER'],-4) == "edit"){
+            $validated['image'] = null;
+            Storage::disk('public')->delete($news->image);
+            $updated = $news->fill($validated)->save();
+            return back();
+        }
+        else{
+            try{
+                $news->delete();
+                return response()->json('ok');
 
-        echo json_encode($response, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
-        die();*/
+            }catch(\Exception $e){
+                Log::error("Ошибка удаления");
+            }
+        }
     }
 }

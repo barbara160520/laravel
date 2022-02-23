@@ -19,13 +19,8 @@ class NewsController extends Controller
 
 	}
 
-	public function show(News $news,$id)
+	public function show(News $news)
 	{
-        $news = News::query()->select(
-			News::$availableFields
-		)->where('id','=',$id)
-        ->get();
-
 		return view('news.show', [
 			'news' => $news
 		]);

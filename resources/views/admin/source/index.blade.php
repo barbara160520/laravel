@@ -34,9 +34,11 @@
                             <button class="delete btn btn-sm btn-outline-danger" rel="{{$source->id}}">Удалить</button>
                         </p>
                     </td>
+
                 </tr>
+                <tr><th>Описание</th><td colspan="3">{{ $source->description}}</td></tr>
               @empty
-                  <tr><td colspan="6">Записей нет</td> </tr>
+                  <tr><td colspan="4">Записей нет</td> </tr>
               @endforelse
             </tbody>
         </table>
@@ -68,24 +70,5 @@
             let result = await response.json();
             return result.ok;
         }
-   /* let buttons = document.querySelectorAll('.delete');
-    buttons.forEach((elem) => {
-        elem.addEventListener('click', () => {
-            let id = elem.getAttribute('data-id');
-            console.log(id);
-            (
-                async () => {
-                    const response = await fetch('/admin/source/destroy/' + id);
-                    const answer = await response.json();
-                    document.getElementById(id).remove();
-                    document.getElementById('message').style.display = '';
-                    document.getElementById('message').innerText = answer.message;
-                    setTimeout(function(){
-                        document.getElementById('message').style.display = 'none';
-                    }, 5000);
-                }
-            )();
-        });
-    });*/
 </script>
 @endpush

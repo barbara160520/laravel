@@ -8,7 +8,7 @@
     <div class="col-lg-6">
     <h2>@include('inc.include', ['name' => Auth::user()->name ])</h2>
     <p>
-    <form method="post" action="{{ route('account.update',['user' => Auth::user()]) }}">
+    <form method="POST" action="{{ route('users.update',['user' => Auth::user()]) }}">
         @csrf
         @method('put')
             <div class="form-group">
@@ -22,7 +22,7 @@
                 @error('email') <strong style="color:red;">{{ $message }}</strong> @enderror
             </div>
             <br>
-            <button type="submit" disabled value="Изменить" class="btn btn-outline-secondary"">Изменить данные профиля</button>
+            <button type="submit" value="Изменить" class="btn btn-outline-secondary"">Изменить данные профиля</button>
         </form>
     </p>
     </div>
@@ -40,3 +40,4 @@
 </div>
 
 @endsection
+

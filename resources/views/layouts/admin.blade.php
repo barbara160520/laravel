@@ -9,6 +9,7 @@
 <link rel="manifest" href="img/site.webmanifest">
 <meta name="csrf-token" content="{{ csrf_token() }}">
     <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="{{ asset('css/font-awesome.css') }}">
     <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
     <style>
         .row{
@@ -26,13 +27,22 @@
                 font-size: 3.5rem;
             }
         }
-
-  .bnt-edit{
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-  }
-
+        img{
+            width: 100px;
+            height: auto;
+            margin: 5px;
+            transition: 0.5s;
+        }
+        img:hover{
+            -webkit-transform: scale(1.1);
+            -moz-transform: scale(1.1);
+            -o-transform: scale(1.1);
+        }
+        .bnt-edit{
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+        }
     </style>
     <!-- Custom styles for this template -->
     <link href="{{ asset('css/dashboard.css') }}" rel="stylesheet">
@@ -57,7 +67,7 @@
 <script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
 <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js" integrity="sha384-uO3SXW5IuS1ZpFPKugNNWqTZRRglnUJK6UAZ/gxOX80nxEkN9NcGZTftn6RzhGWE" crossorigin="anonymous"></script>
 <script src="{{ asset('js/dashboard.js') }}"></script>
-
+<script src="https://cdn.ckeditor.com/ckeditor5/32.0.0/classic/ckeditor.js"></script>
 @stack('js')
 
 </body>

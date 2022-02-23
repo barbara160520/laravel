@@ -24,6 +24,10 @@
                 <input type="text" class="form-control" id="url" name="url" value="{{ old('url') }}">
                 @error('url') <strong style="color:red;">{{ $message }}</strong> @enderror
             </div>
+            <div class="form-group">
+                <label for="description">Описание</label>
+                <textarea class="form-control" name="description" id="description">{!! old('description') !!}</textarea>
+            </div>
             <br>
             <button type="submit" class="btn btn-success" style="float: right;">Сохранить</button>
         </form>
@@ -31,3 +35,12 @@
         Назад</a>
     </div>
 @endsection
+@push('js')
+    <script>
+        ClassicEditor
+            .create( document.querySelector( '#description' ) )
+            .catch( error => {
+                console.error( error );
+            } );
+    </script>
+@endpush

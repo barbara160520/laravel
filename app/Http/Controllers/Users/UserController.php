@@ -80,10 +80,11 @@ class UserController extends Controller
      */
     public function update(EditRequest $request, User $user)
     {
+        dd($request,$user);
         $updated = $user->fill($request->validate())->save();
 
         if($updated) {
-            return redirect()->route('users.user.index')
+            return redirect()->route('users.index')
                 ->with('success', 'Запись успешно обновлена');
         }
 
@@ -126,4 +127,5 @@ class UserController extends Controller
             Log::error('Ошибка смены статуса');
         }
     }
+
 }

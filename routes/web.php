@@ -36,38 +36,43 @@ Route::get('/', function () {
 Route::group(['middleware' => 'auth'], function() {
     Route::get('/account', AccountController::class)
         ->name('account');
-        //проблема с обновлением,пока не работает
-    Route::get('/account/update', AccountController::class)
-    ->name('account.update');
 
     Route::get('/logout', function() {
         Auth::logout();
         return redirect()->route('login');
     })->name('account.logout');
+//not update user data
+    Route::resource('/users',UserController::class);
 
     Route::group(['as' => 'admin.', 'prefix' => 'admin', 'middleware' => 'admin'], function() {
         Route::get('/parser', ParserController::class)
 		->name('parser');
+
         Route::view('/', 'admin.index')
         ->name('index');
+
         Route::resource('/category', AdminCategoryController::class);
-        Route::resource('/news', AdminNewsController::class);
-        Route::resource('/source', AdminSourceController::class);
-        Route::get('/news/destroy/{id}', [AdminNewsController::class, 'destroy'])
-        ->where('id', '\d+')
-        ->name('news.destroy');
         Route::get('/category/destroy/{id}', [AdminCategoryController::class, 'destroy'])
         ->where('id', '\d+')
         ->name('category.destroy');
+
+        Route::resource('/news', AdminNewsController::class);
+        Route::get('/news/destroy/{id}', [AdminNewsController::class, 'destroy'])
+        ->where('id', '\d+')
+        ->name('news.destroy');
+
+        Route::resource('/source', AdminSourceController::class);
         Route::get('/source/destroy/{id}', [AdminSourceController::class, 'destroy'])
         ->where('id', '\d+')
         ->name('source.destroy');
     });
-    });
+});
 
 Route::group(['prefix' => 'users', 'as' => 'users.'], function() {
-    Route::get('/', [UserController::class,'index'])
+
+    Route::view('/', 'users.index')
     ->name('index');
+
     Route::get('/toggleAdmin/{id}', [UserController::class, 'toggleAdmin'])
 	->where('id', '\d+')
 	->name('toggleAdmin');
@@ -85,7 +90,7 @@ Route::group(['prefix' => 'users', 'as' => 'users.'], function() {
 Route::get('/category',[CategoryController::class, 'index'])
     ->name('category.index');
 
-Route::get('/category/{id}',[CategoryController::class, 'show'])
+Route::get('/category/{category}',[CategoryController::class, 'show'])
 ->where('category', '\d+')
 ->name('category.show');
 
@@ -95,14 +100,13 @@ Route::view('/about','about.index')
 Route::get('/news', [NewsController::class, 'index'])
 	->name('news.index');
 
-Route::get('/news/{id}', [NewsController::class, 'show'])
+Route::get('/news/{news}', [NewsController::class, 'show'])
     ->where('news', '\d+')
     ->name('news.show');
 
 
 Route::get('/session', function() {
     if(session()->has('test')) {
-        //dd(session()->all(), session()->get('test'));
         session()->forget('test');
     }
 

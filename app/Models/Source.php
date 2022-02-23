@@ -5,20 +5,25 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+use Illuminate\Support\Facades\Storage;
+
 class Source extends Model
 {
     use HasFactory;
 
     protected $table = 'source';
 
-	public static $availableFields = [
+
+
+ 	public static $availableFields = [
 		'id', 'title', 'url','description','image', 'created_at'
 	];
     protected $fillable = [
 		'title',
         'url',
         'description',
-        'image'
+        'image',
+        'created_at'
 	];
 
 }

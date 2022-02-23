@@ -48,7 +48,7 @@
                  e.addEventListener('click', function() {
                     const id = e.getAttribute("rel");
                     if (confirm("Подтверждаете удаление записи с #ID =" + id + " ?")) {
-                        send('/admin/source/' + id).then(() => {
+                        send('/users/' + id).then(() => {
                             location.reload();
                         });
                     }

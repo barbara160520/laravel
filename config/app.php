@@ -162,7 +162,7 @@ return [
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
         Barryvdh\Debugbar\ServiceProvider::class,
-        //Add\SocialiteProviders\Manager\ServiceProvider::class,
+
 
         /*
          * Package Service Providers...

@@ -10,19 +10,19 @@
   <div class="row g-3">
             <div class="col-sm-6">
               <label for="firstName" class="form-label">Имя</label>
-              <input type="text" class="form-control" id="firstName" name="firstName" placeholder="" value="{{ old('firstName') }}" >
+              <input type="text" class="form-control" id="firstName" name="firstName" placeholder="" value="{{ explode(' ',Auth::user()->name)[0] }}" >
               @error('firstName') <strong style="color:red;">{{ $message }}</strong> @enderror
             </div>
 
             <div class="col-sm-6">
               <label for="lastName" class="form-label">Фамилия</label>
-              <input type="text" class="form-control" id="lastName" name="lastName" placeholder="" value="{{ old('lastName') }}" >
+              <input type="text" class="form-control" id="lastName" name="lastName" placeholder="" value="{{ explode(' ',Auth::user()->name)[1] }}" >
               @error('lastName') <strong style="color:red;">{{ $message }}</strong> @enderror
             </div>
 
             <div class="col-12">
               <label for="email" class="form-label">Email <span class="text-muted"></span></label>
-              <input type="email" class="form-control" id="email" name="email" value="{{ old('email') }}" placeholder="you@example.com">
+              <input type="email" class="form-control" id="email" name="email" value="{{ Auth::user()->email }}" placeholder="you@example.com">
               @error('email') <strong style="color:red;">{{ $message }}</strong> @enderror
             </div>
 

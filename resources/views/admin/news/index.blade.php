@@ -34,7 +34,7 @@
                     <td>{{ $news->status }}</td>
                     <td>{{ optional($news->category)->title }}</td>
                     <td>{{ $news->author }}</td>
-                    <td>{{ $news->description }}</td>
+                    <td>{!! $news->description !!}</td>
                     <td>
                         <p class="btn-group">
                             <a class="btn btn-sm btn-outline-primary" href="{{ route('admin.news.edit', ['news' => $news->id]) }}">Редактировать</a> &nbsp;
@@ -56,8 +56,8 @@
             const el = document.querySelectorAll(".delete");
              el.forEach(function (e, k) {
                  e.addEventListener('click', function() {
-                    const id = e.getAttribute("rel");
-                    if (confirm("Подтверждаете удаление записи с #ID =" + id + " ?")) {
+                const id = e.getAttribute("rel");
+                if (confirm("Подтверждаете удаление записи с #ID =" + id + " ?")) {
                         send('/admin/news/' + id).then(() => {
                             location.reload();
                         });
@@ -75,24 +75,5 @@
             let result = await response.json();
             return result.ok;
         }
-   /* let buttons = document.querySelectorAll('.delete');
-    buttons.forEach((elem) => {
-        elem.addEventListener('click', () => {
-            let id = elem.getAttribute('data-id');
-            console.log(id);
-            (
-                async () => {
-                    const response = await fetch('/admin/news/destroy/' + id);
-                    const answer = await response.json();
-                    document.getElementById(id).remove();
-                    document.getElementById('message').style.display = '';
-                    document.getElementById('message').innerText = answer.message;
-                    setTimeout(function(){
-                        document.getElementById('message').style.display = 'none';
-                    }, 5000);
-                }
-            )();
-        });
-    });*/
 </script>
 @endpush

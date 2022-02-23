@@ -6,6 +6,7 @@ use App\Contracts\Parser;
 use App\Contracts\Social;
 use App\Services\ParserService;
 use App\Services\SocialService;
+use App\Services\UploadServices;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\ServiceProvider;
 
@@ -27,6 +28,12 @@ class AppServiceProvider extends ServiceProvider
 			Social::class,
 			SocialService::class
 		);
+        $this->app->bind(
+			Resource::class,
+			ResourceService::class
+		);
+
+        $this->app->bind(UploadService::class);
     }
 
     /**

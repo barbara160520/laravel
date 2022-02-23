@@ -30,7 +30,7 @@
                     <td>{{ $category->id }}</td>
                     <td>{{ $category->title }}</td>
                     <td>{{ $category->news->count() }}</td>
-                    <td>{{ $category->description }}</td>
+                    <td>{!! $category->description !!}</td>
                     <td>
                         <p class="btn-group">
                             <a class="btn btn-sm btn-outline-primary" href="{{ route('admin.category.edit', ['category' => $category]) }}">Редактировать</a> &nbsp;
